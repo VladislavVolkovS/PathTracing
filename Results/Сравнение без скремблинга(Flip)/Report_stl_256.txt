@@ -1,0 +1,8 @@
+FLIP between reference image <example2000.png> and test image <stl_256.png>:
+        Mean: 0.013935
+        Weighted median: 0.025629
+        1st weighted quartile: 0.017546
+        3rd weighted quartile: 0.036537
+        Min: 0.000000
+        Max: 0.117515
+        Evaluation time: 0.1045 seconds
