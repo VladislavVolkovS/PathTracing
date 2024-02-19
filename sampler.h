@@ -5,8 +5,8 @@
 struct SamplerState {
   uint32_t seed;
   uint32_t sampleIdx;
-  uint32_t depth;
+  uint32_t depth = 0;
 };
 
-SamplerState initSampler(uint32_t linearPixelIndex, uint32_t pixelSampleIndex,
-                                uint32_t seed);
+SamplerState initSampler(uint32_t linearPixelIndex, uint32_t pixelSampleIndex, uint32_t seed,
+                         uint32_t depth);

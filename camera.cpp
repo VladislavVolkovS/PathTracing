@@ -35,7 +35,7 @@ int generateCameraRays(std::vector<Ray> &rays, std::vector<int> &pixCoord, const
 	// O---> X
 	for (int h = height - 1; h >= 0; --h) {
 		for (int w = 0; w < width; ++w) {
-            auto sampler = initSampler(h * width + w, pixelSampleIndex, 0u);
+            auto sampler = initSampler(h * width + w, pixelSampleIndex, 0, 0);
 			float u = float(w + getRandom<SampleDimension::ePixelX>(sampler, gen_type)) / float(width);
 			float v = float(h + getRandom<SampleDimension::ePixelY>(sampler, gen_type)) / float(height);
 			// float u = float(w) / float(width);

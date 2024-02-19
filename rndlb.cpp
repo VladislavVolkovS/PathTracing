@@ -1,6 +1,5 @@
 #include <random>
 #include "rndlb.h"
-#include "rng.h"
 #include "sbprimes.h"
 
 float GetRandomFromStd() {
@@ -25,38 +24,14 @@ float GetRandomFromStd() {
 	return distribution(generator);
 }
 
-float halton(uint32_t value, uint32_t base) {
-    const float invBase = (float)1 / (float)base;
-    uint64_t reversedDigits = 0;
-    float invBaseN = 1;
+double sobol(uint32_t index, uint32_t base) {
+    uint32_t result = 0;
 
-    while (value) {
-        uint64_t next  = value / base;
-        uint64_t digit = value - next * base;
-        reversedDigits = reversedDigits * base + digit;
-        invBaseN *= invBase;
-        value = next;
-    }
+    for(uint32_t j = base * sobol_matrices_size; index; index >>= 1, j++)
+        if(index & 1)
+            result ^= matrices[j];
 
-    return std::min(reversedDigits * invBaseN, FloatOneMinusEpsilon);
-}
-
-float ScrambledHalton(uint32_t index, uint32_t base, const uint16_t *perm) {
-    static std::vector<uint16_t> radicalInversePermutations;
-    RNG rng;
-    radicalInversePermutations = ComputeRadicalInversePermutations(rng);
-    return ScrambledRadicalInverse(base, index, &radicalInversePermutations[PrimeSums[base]]);
-}
-
-float sobol(uint32_t index, uint32_t dimension, const unsigned long long scramble) {
-    unsigned long long result = scramble & ~-(1ULL << sobol_matrices_size);
-    for (unsigned i = dimension * sobol_matrices_size; index; index >>= 1, ++i)
-    {
-        if (index & 1)
-            result ^= matrices[i];
-    }
-
-    return result * (1.0 / (1ULL << sobol_matrices_size));
+    return result * (1.0 / static_cast<double>(1ULL << 32));
 }
 
 
