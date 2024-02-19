@@ -7,8 +7,12 @@
 #include "intersection.h"
 #include "triangle.h"
 #include "sampler.h"
+
+#include "sampler/halton.h"
+
 #define _USE_MATH_DEFINES
 #include <cmath>
+#include <fstream>
 
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include <stb_image_write.h>
@@ -87,6 +91,7 @@ vec3 hemisphereSampleCosine(const vec2 &uv) {
 }
 
 int main() {
+
 	std::cout << "Ok\n";
 
 	int width = 320;
@@ -132,6 +137,7 @@ int main() {
 			gen_type = STL;
 			break;
     }
+
 
 	if (!ret) {
   		exit(1);
@@ -292,7 +298,7 @@ int main() {
 						const vec3 nLB = world.normals[indexLB];
 						const vec3 nLC = world.normals[indexLC];
 						
-						auto sampler = initSampler(pixelCoordBuffers[currentBufferId][i], path, 42);
+						auto sampler = initSampler(pixelCoordBuffers[currentBufferId][i], path, 0, bounce);
 						float r0 = float(getRandom<SampleDimension::eLightPointX>(sampler, gen_type));
 						float r1 = float(getRandom<SampleDimension::eLightPointY>(sampler, gen_type));
 						vec2 luv(1.0f - sqrtf(r0), sqrtf(r0) * r1);
@@ -366,7 +372,7 @@ int main() {
 
 					// uint sampleIndex = i * 16384 + (rnd & 16383);
 					// vec2 uv = hammersley2d(sampleIndex, 16384 * RAY_NUM);
-					auto sampler = initSampler(pixelCoordBuffers[currentBufferId][i], path, 0);
+					auto sampler = initSampler(pixelCoordBuffers[currentBufferId][i], path, 0, bounce);
 					vec2 uv{getRandom<SampleDimension::ePixelX>(sampler, gen_type), getRandom<SampleDimension::ePixelY>(sampler, gen_type)};
 
 					//vec3 rndDirection = hemisphereSampleUniform(uv);
@@ -428,6 +434,6 @@ int main() {
 	}
 	int res = stbi_write_png(name.c_str(), width, height, 4, pixels.data(), 0);
 	auto t_finish = std::chrono::steady_clock::now();
-	std::cout << "Execution time: " << std::chrono::duration<double, std::milli>(t_finish - t_start).count() << "ms" << std::endl;
+	std::cout << "Execution time: " << std::chrono::duration_cast<std::chrono::seconds>(t_finish - t_start).count() << "s" << std::endl;
 	return 0;
 }
