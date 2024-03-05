@@ -1,6 +1,5 @@
 #include <random>
 #include "rndlb.h"
-#include "sbprimes.h"
 
 float GetRandomFromStd() {
 	static std::default_random_engine generator;
@@ -24,16 +23,6 @@ float GetRandomFromStd() {
 	return distribution(generator);
 }
 
-double sobol(uint32_t index, uint32_t base) {
-    uint32_t result = 0;
-
-    for(uint32_t j = base * sobol_matrices_size; index; index >>= 1, j++)
-        if(index & 1)
-            result ^= matrices[j];
-
-    return result * (1.0 / static_cast<double>(1ULL << 32));
-}
-
 
 glm::vec3 random_in_unit_disk() {
 	glm::vec3 p;
@@ -44,12 +33,12 @@ glm::vec3 random_in_unit_disk() {
 	return p;
 }
 
-glm::vec3 random_in_unit_disk(SamplerState& state, Generator gen_type) {
+glm::vec3 random_in_unit_disk(SamplerState& state, Generator gen_type, bool scrambling) {
 	glm::vec3 p;
 	do
 	{
-		p = 2.0f * glm::vec3(getRandom<SampleDimension::eRussianRoulette>(state, gen_type),
-                             getRandom<SampleDimension::eRussianRoulette>(state, gen_type), 0)
+		p = 2.0f * glm::vec3(getRandom<SampleDimension::eRussianRoulette>(state, gen_type, scrambling),
+                             getRandom<SampleDimension::eRussianRoulette>(state, gen_type, scrambling), 0)
                              - glm::vec3(1, 1, 0);
 	} while (dot(p, p) >= 1.0);
 	return p;

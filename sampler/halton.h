@@ -3,4 +3,6 @@
 #include <string>
 #include <memory>
 
-double halton(int index, int base);
+float halton(int index, int base);
+
+float halton_scramble(int index, int base);

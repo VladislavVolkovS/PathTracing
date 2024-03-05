@@ -1,24 +1,4 @@
-#include <vector>
-#include <string>
-#include <chrono>
-#include <iostream>
-#include <random>
-#include "camera.h"
-#include "intersection.h"
-#include "triangle.h"
-#include "sampler.h"
-
-#include "sampler/halton.h"
-
-#define _USE_MATH_DEFINES
-#include <cmath>
-#include <fstream>
-
-#define STB_IMAGE_WRITE_IMPLEMENTATION
-#include <stb_image_write.h>
-
-#define TINYOBJLOADER_IMPLEMENTATION
-#include <tiny_obj_loader.h>
+#include "utility.h"
 
 using namespace glm;
 
@@ -90,18 +70,18 @@ vec3 hemisphereSampleCosine(const vec2 &uv) {
 	return vec3(cos(phi) * sinTheta, sin(phi) * sinTheta, cosTheta);
 }
 
-int main() {
+int main(int argc, const char* argv[]) {
 
-	std::cout << "Ok\n";
+	auto params = ReadParams(argc, argv);
+	std::cout << "Params were read\n";
 
-	int width = 320;
-	int height = 240;
+	int width = (int)params.width;
+	int height = (int)params.height;
+	auto gen_type = params.gen_type;
+	int MAX_PATHS = (int)params.samples_per_pixel;
 
 	std::string modelPath = "/home/vladosenv/render/assets/CornellBox-Original.obj";
 	std::string materialPath = "/home/vladosenv/render/assets/";
-
-	// std::string filename = "./media/CornellBox/CornellBox-Empty-RG.obj";
-	// std::string filename = "./media/CornellBox/CornellBox-Sphere.obj";
 	
 	
 	tinyobj::attrib_t attrib;
@@ -119,26 +99,6 @@ int main() {
  	 	std::cerr << err << std::endl;
 	}
 
-	std::cout << "Choose generator for sampling\n1 - stl\n2 - halton\n3 - sobol\n";
-    int gen_type_inpunt;
-    std::cin >> gen_type_inpunt;
-    auto gen_type = STL;
-    switch (gen_type_inpunt) {
-        case 1:
-			gen_type = STL;
-			break;
-        case 2:
-			gen_type = HALTON;
-			break;
-        case 3:
-			gen_type = SOBOL;
-			break;
-		default:
-			gen_type = STL;
-			break;
-    }
-
-
 	if (!ret) {
   		exit(1);
 	} else {
@@ -153,10 +113,6 @@ int main() {
 
 	auto t_start = std::chrono::steady_clock::now();
 	AccelStructure world;
-
-	int MAX_PATHS;
-	std::cout << "Enter numbers of rays on 1 pixel\n";
-	std::cin >> MAX_PATHS;
 
 	for (const tinyobj::shape_t &shape : shapes) {
 		bool isLight = false;
@@ -208,9 +164,17 @@ int main() {
 			world.materialIds.push_back(current_material_id);
 		}
 	}
+	// CornellBox-Original
+	vec3 lookfrom(0, 1, 6.7);
+	vec3 lookat(0, 1, 0);
 
-	vec3 lookfrom(0, 1.8, 7.0);
-	vec3 lookat(0, 1.0, 0);
+	// Mirrors
+	// vec3 lookfrom(2., 1.5, -.1);
+	// vec3 lookat(1., 1.2, -2.8);
+
+	// ShadowSphere
+	// vec3 lookfrom(0, 5.5, 15);
+	// vec3 lookat(0, 0, 0);
 	float dist_to_focus = glm::length(lookfrom - lookat);
 	float aperture = 0.0f;
 	Camera cam(lookfrom, lookat, vec3(0, 1, 0), 20, float(width) / float(height), aperture, dist_to_focus);
@@ -298,9 +262,10 @@ int main() {
 						const vec3 nLB = world.normals[indexLB];
 						const vec3 nLC = world.normals[indexLC];
 						
-						auto sampler = initSampler(pixelCoordBuffers[currentBufferId][i], path, 0, bounce);
-						float r0 = float(getRandom<SampleDimension::eLightPointX>(sampler, gen_type));
-						float r1 = float(getRandom<SampleDimension::eLightPointY>(sampler, gen_type));
+						auto sampler = initSampler(pixelCoordBuffers[currentBufferId][i], path, 1, bounce);
+						auto scrambling = true;
+						float r0 = float(getRandom<SampleDimension::eLightPointX>(sampler, gen_type, scrambling));
+						float r1 = float(getRandom<SampleDimension::eLightPointY>(sampler, gen_type, scrambling));
 						vec2 luv(1.0f - sqrtf(r0), sqrtf(r0) * r1);
 						// if (luv.x + luv.y >= 1.0)
 						// {
@@ -372,8 +337,9 @@ int main() {
 
 					// uint sampleIndex = i * 16384 + (rnd & 16383);
 					// vec2 uv = hammersley2d(sampleIndex, 16384 * RAY_NUM);
-					auto sampler = initSampler(pixelCoordBuffers[currentBufferId][i], path, 0, bounce);
-					vec2 uv{getRandom<SampleDimension::ePixelX>(sampler, gen_type), getRandom<SampleDimension::ePixelY>(sampler, gen_type)};
+					auto sampler = initSampler(pixelCoordBuffers[currentBufferId][i], path, 1, bounce);
+					vec2 uv{getRandom<SampleDimension::ePixelX>(sampler, gen_type, true),
+							getRandom<SampleDimension::ePixelY>(sampler, gen_type, true)};
 
 					//vec3 rndDirection = hemisphereSampleUniform(uv);
 					vec3 rndDirection = hemisphereSampleCosine(uv);
@@ -423,10 +389,10 @@ int main() {
 			name = "stl_" + std::to_string(MAX_PATHS) + ".png";
 			break;
 		case HALTON:
-			name = "halton_" + std::to_string(MAX_PATHS) + ".png";
+			name = "halton" + std::to_string(MAX_PATHS) + ".png";
 			break;
 		case SOBOL:
-			name = "sobol_" + std::to_string(MAX_PATHS) + ".png";
+			name = "sobol" + std::to_string(MAX_PATHS) + ".png";
 			break;
 		default:
 			name = "result.png";
