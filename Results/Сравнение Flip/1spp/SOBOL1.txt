@@ -1,0 +1,8 @@
+FLIP between reference image <example.png> and test image <sobol1.png>:
+        Mean: 0.152918
+        Weighted median: 0.196413
+        1st weighted quartile: 0.123455
+        3rd weighted quartile: 0.300083
+        Min: 0.000031
+        Max: 0.825293
+        Evaluation time: 0.6319 seconds

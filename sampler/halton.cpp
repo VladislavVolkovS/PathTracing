@@ -3,12 +3,12 @@
 #include "halton.h"
 #include "primes.h"
 
-float halton(int index, int base) {
-    int d;
-    int j;
+float halton(uint32_t index, uint32_t base) {
+    uint32_t d;
+    uint32_t j;
     float prime_inv = 1.0f / static_cast<float>(base);
     float result = 0.0f;
-    int t = index;
+    uint32_t t = index;
 
     while (t > 0) {
         d = (t % base);
@@ -21,7 +21,7 @@ float halton(int index, int base) {
 
 
 // need to implement!!!
-float halton_scramble(int index, int base) {
+float halton_scramble(uint32_t index, uint32_t base) {
     // float result = 0.0f;
     // int d;
     // int j;

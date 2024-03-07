@@ -3,6 +3,6 @@
 #include <string>
 #include <memory>
 
-float halton(int index, int base);
+float halton(uint32_t index, uint32_t base);
 
-float halton_scramble(int index, int base);
+float halton_scramble(uint32_t index, uint32_t base);

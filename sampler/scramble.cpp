@@ -45,6 +45,7 @@ uint32_t laine_karras_permutation(uint32_t value, uint32_t seed) {
 }
 
 uint32_t nested_uniform_scramble(uint32_t value, uint32_t seed) {
+    //value = __builtin_bitreverse32(value);
     value = ReverseBits(value);
     value = laine_karras_permutation(value, seed);
     value = ReverseBits(value);

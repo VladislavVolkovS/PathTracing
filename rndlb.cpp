@@ -2,7 +2,8 @@
 #include "rndlb.h"
 
 float GetRandomFromStd() {
-	static std::default_random_engine generator;
+
+	static std::default_random_engine generator{123};
 
 	// static std::mt19937 generator; // std::mersenne_twister_engine<std::uint_fast32_t, 32, 624, 397, 31,
     //                         			 0x9908b0df, 11,
