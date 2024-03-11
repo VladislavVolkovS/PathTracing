@@ -1,4 +1,5 @@
 #include "utility.h"
+#include <nanobench.h>
 
 using namespace glm;
 
@@ -70,18 +71,17 @@ vec3 hemisphereSampleCosine(const vec2 &uv) {
 	return vec3(cos(phi) * sinTheta, sin(phi) * sinTheta, cosTheta);
 }
 
-int main(int argc, const char* argv[]) {
-
+void Render(int argc, const char* argv[]) {
 	auto params = ReadParams(argc, argv);
 	std::cout << "Params were read\n";
 
 	int width = (int)params.width;
 	int height = (int)params.height;
 	auto gen_type = params.gen_type;
-	int MAX_PATHS = (int)params.samples_per_pixel;
+	uint32_t MAX_PATHS = (uint32_t)params.samples_per_pixel;
 
-	std::string modelPath = "/home/vladosenv/render/assets/CornellBox-Original.obj";
-	std::string materialPath = "/home/vladosenv/render/assets/";
+	std::string modelPath = "assets/CornellBox-Original.obj";
+	std::string materialPath = "assets/";
 	
 	
 	tinyobj::attrib_t attrib;
@@ -188,7 +188,7 @@ int main(int argc, const char* argv[]) {
 		std::vector<std::vector<int>> pixelCoordBuffers(2); // stores pixel coord as int: (h * width + w)
 		std::vector<std::vector<vec3>> pathWeightBuffers(2);
 		int numRays = generateCameraRays(raysBuffers[0], pixelCoordBuffers[0], cam, width, height,
-										 path, gen_type);
+										 path, gen_type, MAX_PATHS);
 		pathWeightBuffers[0].resize(numRays);
 		pathWeightBuffers[0].assign(numRays, vec3{1.0f});
 		const int MAX_BOUNCE = 4;
@@ -401,5 +401,25 @@ int main(int argc, const char* argv[]) {
 	int res = stbi_write_png(name.c_str(), width, height, 4, pixels.data(), 0);
 	auto t_finish = std::chrono::steady_clock::now();
 	std::cout << "Execution time: " << std::chrono::duration_cast<std::chrono::seconds>(t_finish - t_start).count() << "s" << std::endl;
+}
+
+void bench(ankerl::nanobench::Bench* bench, const char* name, int argc, const char* argv[]) {
+
+    bench->run(name, [&]() {
+        Render(argc, argv);
+    });
+}
+
+int main(int argc, const char* argv[]) {
+
+	std::ofstream bench_res("bench_results");
+
+	ankerl::nanobench::Bench benchmark;
+	benchmark.title("Benchmarks");
+	benchmark.relative(true);
+	benchmark.output(&bench_res);
+
+	bench(&benchmark, "name", argc, argv);
+
 	return 0;
 }

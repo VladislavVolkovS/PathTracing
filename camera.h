@@ -18,4 +18,5 @@ public:
 };
 
 int generateCameraRays(std::vector<Ray> &rays, std::vector<int> &pixCoord, const Camera &cam,
-					   int width, int height, uint32_t pixelSampleIndex, Generator gen_type);
+					   int width, int height, uint32_t pixelSampleIndex, Generator gen_type,
+					   uint32_t samplesPerPixel);
