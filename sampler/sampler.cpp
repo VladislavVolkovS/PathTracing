@@ -11,9 +11,10 @@ uint32_t sampler_hash(uint32_t a) {
 }
 
 SamplerState initSampler(uint32_t linearPixelIndex, uint32_t pixelSampleIndex, uint32_t seed,
-                         uint32_t depth) {
+                         uint32_t depth, uint32_t samplesPerPixel) {
     SamplerState sampler {};
-    sampler.seed = sampler_hash(linearPixelIndex) + pixelSampleIndex;
+    sampler.seed = pixelSampleIndex + linearPixelIndex * samplesPerPixel;
+    // sampler.seed = sampler_hash(linearPixelIndex) + pixelSampleIndex;
     // sampler.seed = seed + pixelSampleIndex;
     sampler.sampleIdx = pixelSampleIndex;
     sampler.depth = depth;

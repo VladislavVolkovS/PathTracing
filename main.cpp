@@ -262,7 +262,7 @@ int main(int argc, const char* argv[]) {
 						const vec3 nLB = world.normals[indexLB];
 						const vec3 nLC = world.normals[indexLC];
 						
-						auto sampler = initSampler(pixelCoordBuffers[currentBufferId][i], path, 1, bounce);
+						auto sampler = initSampler(pixelCoordBuffers[currentBufferId][i], path, 1, bounce, MAX_PATHS);
 						auto scrambling = true;
 						float r0 = float(getRandom<SampleDimension::eLightPointX>(sampler, gen_type, scrambling));
 						float r1 = float(getRandom<SampleDimension::eLightPointY>(sampler, gen_type, scrambling));
@@ -337,7 +337,7 @@ int main(int argc, const char* argv[]) {
 
 					// uint sampleIndex = i * 16384 + (rnd & 16383);
 					// vec2 uv = hammersley2d(sampleIndex, 16384 * RAY_NUM);
-					auto sampler = initSampler(pixelCoordBuffers[currentBufferId][i], path, 1, bounce);
+					auto sampler = initSampler(pixelCoordBuffers[currentBufferId][i], path, 1, bounce, MAX_PATHS);
 					vec2 uv{getRandom<SampleDimension::ePixelX>(sampler, gen_type, true),
 							getRandom<SampleDimension::ePixelY>(sampler, gen_type, true)};
 

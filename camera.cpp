@@ -25,7 +25,8 @@ Ray Camera::get_ray(const float s, const float t) const {
 }
 
 int generateCameraRays(std::vector<Ray> &rays, std::vector<int> &pixCoord, const Camera &cam,
-                       int width, int height, uint32_t pixelSampleIndex, Generator gen_type) {
+                       int width, int height, uint32_t pixelSampleIndex, Generator gen_type,
+                       uint32_t samplesPerPixel) {
 	const int numRays = width * height;
 	rays.reserve(numRays);
 	pixCoord.reserve(numRays);
@@ -35,7 +36,7 @@ int generateCameraRays(std::vector<Ray> &rays, std::vector<int> &pixCoord, const
 	// O---> X
 	for (int h = height - 1; h >= 0; --h) {
 		for (int w = 0; w < width; ++w) {
-            auto sampler = initSampler(h * width + w, pixelSampleIndex, 1, 0);
+            auto sampler = initSampler(h * width + w, pixelSampleIndex, 1, 0, samplesPerPixel);
             auto scrambling = true;
 			float u = float(w + getRandom<SampleDimension::ePixelX>(sampler, gen_type, scrambling)) / float(width);
 			float v = float(h + getRandom<SampleDimension::ePixelY>(sampler, gen_type, scrambling)) / float(height);
