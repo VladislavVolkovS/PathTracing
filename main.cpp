@@ -262,7 +262,7 @@ void Render(int argc, const char* argv[]) {
 						const vec3 nLB = world.normals[indexLB];
 						const vec3 nLC = world.normals[indexLC];
 						
-						auto sampler = initSampler(pixelCoordBuffers[currentBufferId][i], path, 1, bounce, MAX_PATHS);
+						auto sampler = initSampler(pixelCoordBuffers[currentBufferId][i], path, 1, bounce, MAX_PATHS, width);
 						auto scrambling = true;
 						float r0 = float(getRandom<SampleDimension::eLightPointX>(sampler, gen_type, scrambling));
 						float r1 = float(getRandom<SampleDimension::eLightPointY>(sampler, gen_type, scrambling));
@@ -337,7 +337,7 @@ void Render(int argc, const char* argv[]) {
 
 					// uint sampleIndex = i * 16384 + (rnd & 16383);
 					// vec2 uv = hammersley2d(sampleIndex, 16384 * RAY_NUM);
-					auto sampler = initSampler(pixelCoordBuffers[currentBufferId][i], path, 1, bounce, MAX_PATHS);
+					auto sampler = initSampler(pixelCoordBuffers[currentBufferId][i], path, 1, bounce, MAX_PATHS, width);
 					vec2 uv{getRandom<SampleDimension::ePixelX>(sampler, gen_type, true),
 							getRandom<SampleDimension::ePixelY>(sampler, gen_type, true)};
 
@@ -403,23 +403,24 @@ void Render(int argc, const char* argv[]) {
 	std::cout << "Execution time: " << std::chrono::duration_cast<std::chrono::seconds>(t_finish - t_start).count() << "s" << std::endl;
 }
 
-void bench(ankerl::nanobench::Bench* bench, const char* name, int argc, const char* argv[]) {
+// void bench(ankerl::nanobench::Bench* bench, const char* name, int argc, const char* argv[]) {
 
-    bench->run(name, [&]() {
-        Render(argc, argv);
-    });
-}
+//     bench->run(name, [&]() {
+//         Render(argc, argv);
+//     });
+// }
 
 int main(int argc, const char* argv[]) {
 
-	std::ofstream bench_res("bench_results");
+	// std::ofstream bench_res("bench_results");
 
-	ankerl::nanobench::Bench benchmark;
-	benchmark.title("Benchmarks");
-	benchmark.relative(true);
-	benchmark.output(&bench_res);
-
-	bench(&benchmark, "name", argc, argv);
-
+	// ankerl::nanobench::Bench benchmark;
+	// benchmark.title("Benchmarks");
+	// benchmark.relative(true);
+	// benchmark.output(&bench_res);
+	// benchmark.minEpochIterations(2);
+	// // benchmark.maxEpochTime(std::chrono::nanoseconds(10000000000));
+	// bench(&benchmark, "name", argc, argv);
+	Render(argc, argv);
 	return 0;
 }

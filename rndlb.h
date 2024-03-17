@@ -10,6 +10,8 @@
 
 float GetRandomFromStd();
 
+
+//add benchmarks 
 template <SampleDimension Dim>
 float getRandom(SamplerState& state, Generator gen_type, bool scrambling) {
     uint32_t dimension = uint32_t(Dim) + state.depth * uint32_t(SampleDimension::eNUM_DIMENSIONS);
