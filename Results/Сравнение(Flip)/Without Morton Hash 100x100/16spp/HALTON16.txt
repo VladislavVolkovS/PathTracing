@@ -1,0 +1,8 @@
+FLIP between reference image <100x100example.png> and test image <halton16.png>:
+        Mean: 0.063704
+        Weighted median: 0.077866
+        1st weighted quartile: 0.053181
+        3rd weighted quartile: 0.114098
+        Min: 0.001654
+        Max: 0.343608
+        Evaluation time: 0.0160 seconds

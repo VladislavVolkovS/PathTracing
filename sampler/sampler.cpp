@@ -32,10 +32,10 @@ SamplerState initSampler(uint32_t linearPixelIndex, uint32_t pixelSampleIndex, u
     sampler.seed = jenkins_hash(linearPixelIndex) + pixelSampleIndex; // better for halton
     // sampler.seed = seed + pixelSampleIndex;
 
-    // sampler.sampleIdx = pixelSampleIndex;
-    sampler.sampleIdx =
-        EncodeMorton(linearPixelIndex / width, linearPixelIndex % width) * samplesPerPixel +
-        pixelSampleIndex; // Morton Hash
+    sampler.sampleIdx = pixelSampleIndex;
+    // sampler.sampleIdx =
+    //     EncodeMorton(linearPixelIndex / width, linearPixelIndex % width) * samplesPerPixel +
+    //     pixelSampleIndex; // Morton Hash
     
     sampler.depth = depth;
 

@@ -1,5 +1,4 @@
 #include "utility.h"
-#include <nanobench.h>
 
 using namespace glm;
 
@@ -78,6 +77,18 @@ void Render(int argc, const char* argv[]) {
 	int width = (int)params.width;
 	int height = (int)params.height;
 	auto gen_type = params.gen_type;
+	switch (gen_type)
+	{
+	case STL:
+		printf("Type of generation: %s\n", "STL");
+		break;
+	case HALTON:
+		printf("Type of generation: %s\n", "HALTON");
+	case SOBOL:
+		printf("Type of generation: %s\n", "SOBOL");
+	default:
+		break;
+	}
 	uint32_t MAX_PATHS = (uint32_t)params.samples_per_pixel;
 
 	std::string modelPath = "assets/CornellBox-Original.obj";
@@ -184,6 +195,8 @@ void Render(int argc, const char* argv[]) {
 	std::vector<vec4> colors(numPixels, vec4(0.0f));
 	for (int path = 0; path < MAX_PATHS; ++path) {
 		// generate primary rays
+		std::cout << "\rCurrent sample number: " << path << std::flush;
+		// printf("\rCurrent sample number = %d\n", path);
 		std::vector<std::vector<Ray>> raysBuffers(2);
 		std::vector<std::vector<int>> pixelCoordBuffers(2); // stores pixel coord as int: (h * width + w)
 		std::vector<std::vector<vec3>> pathWeightBuffers(2);
@@ -259,6 +272,7 @@ void Render(int argc, const char* argv[]) {
 						const vec3 lC = world.vertices[indexLC];
 
 						const vec3 nLA = world.normals[indexLA];
+
 						const vec3 nLB = world.normals[indexLB];
 						const vec3 nLC = world.normals[indexLC];
 						
