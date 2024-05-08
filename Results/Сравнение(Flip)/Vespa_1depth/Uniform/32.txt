@@ -1,0 +1,8 @@
+FLIP between reference image <uniform_5000spp_1d.png> and test image <uniform_32spp_1d.png>:
+        Mean: 0.026030
+        Weighted median: 0.036841
+        1st weighted quartile: 0.022693
+        3rd weighted quartile: 0.055269
+        Min: 0.000000
+        Max: 0.262752
+        Evaluation time: 2.1988 seconds

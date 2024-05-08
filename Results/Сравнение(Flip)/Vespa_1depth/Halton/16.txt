@@ -1,0 +1,8 @@
+FLIP between reference image <uniform_5000spp_1d.png> and test image <halton_16spp_1d.png>:
+        Mean: 0.033558
+        Weighted median: 0.048319
+        1st weighted quartile: 0.029383
+        3rd weighted quartile: 0.072406
+        Min: 0.000000
+        Max: 0.326396
+        Evaluation time: 2.1595 seconds
